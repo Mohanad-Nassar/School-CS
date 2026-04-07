@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wired or Wireless – Year 8 Revision</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f1f5f9;
+    --surface: #ffffff;
+    --card: #ffffff;
+    --border: #cbd5e1;
+    --border-light: #e2e8f0;
+    /* Wired = orange, Wireless = blue */
+    --wired: #ea580c;
+    --wired-light: #fff7ed;
+    --wired-border: #fed7aa;
+    --wireless: #2563eb;
+    --wireless-light: #eff6ff;
+    --wireless-border: #bfdbfe;
+    /* Feedback */
+    --correct: #16a34a;
+    --correct-bg: #f0fdf4;
+    --correct-border: #bbf7d0;
+    --wrong: #dc2626;
+    --wrong-bg: #fef2f2;
+    --wrong-border: #fecaca;
+    /* General */
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --text: #1e293b;
+    --text-secondary: #475569;
+    --muted: #94a3b8;
+    --radius: 14px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.06);
+    --shadow-lg: 0 4px 6px rgba(0,0,0,.06), 0 10px 30px rgba(0,0,0,.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--text);
+    color: #fff;
+    text-align: center;
+    padding: 48px 24px 36px;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.3);
+    color: #fff;
+    font-size: 11px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; padding: 5px 14px; border-radius: 100px;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  header h1 .w { color: #fb923c; }
+  header h1 .wi { color: #60a5fa; }
+  header p { color: rgba(255,255,255,.65); font-size: 15px; }
+
+  /* ── Nav ── */
+  nav {
+    background: var(--surface);
+    border-bottom: 2px solid var(--border-light);
+    display: flex; justify-content: center; gap: 4px;
+    padding: 12px 24px; flex-wrap: wrap;
+    position: sticky; top: 0; z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  }
+  .tab-btn {
+    background: transparent; border: none;
+    color: var(--text-secondary); padding: 10px 20px; border-radius: 10px;
+    font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all .18s;
+  }
+  .tab-btn:hover { background: var(--bg); color: var(--text); }
+  .tab-btn.active {
+    background: var(--accent); color: #fff;
+    box-shadow: 0 2px 8px rgba(37,99,235,.3);
+  }
+
+  /* ── Sections ── */
+  .section { display: none; padding: 28px 20px 64px; max-width: 820px; margin: 0 auto; }
+  .section.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section.active > * { animation: fadeUp .28s ease both; }
+  .section.active > *:nth-child(2) { animation-delay: .05s; }
+  .section.active > *:nth-child(3) { animation-delay: .1s; }
+  .section.active > *:nth-child(4) { animation-delay: .15s; }
+
+  /* ── Section heading ── */
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.25rem; font-weight: 800; color: var(--text);
+    margin-bottom: 6px;
+  }
+  .section-sub { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; }
+
+  /* ── Pills ── */
+  .pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .pill {
+    font-size: 13px; padding: 6px 16px; border-radius: 100px; cursor: pointer;
+    border: 2px solid var(--border); background: var(--surface); color: var(--text-secondary);
+    font-weight: 600; transition: all .15s;
+  }
+  .pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .pill:hover:not(.active) { border-color: var(--accent); color: var(--accent); background: var(--wireless-light); }
+
+  /* ── Progress ── */
+  .progress-bar { width: 100%; height: 8px; background: var(--border-light); border-radius: 100px; overflow: hidden; margin-bottom: 16px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #7c3aed); border-radius: 100px; transition: width .35s ease; }
+
+  /* ── Flashcard ── */
+  .fc-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+  .fc-controls span { color: var(--text-secondary); font-size: 14px; font-weight: 600; }
+  .card-scene { width: 100%; perspective: 1200px; margin-bottom: 12px; }
+  .card-inner {
+    position: relative; width: 100%; min-height: 220px;
+    transform-style: preserve-3d;
+    transition: transform .5s cubic-bezier(.4,0,.2,1); cursor: pointer;
+  }
+  .card-inner.flipped { transform: rotateY(180deg); }
+  .card-face {
+    position: absolute; inset: 0; backface-visibility: hidden;
+    border-radius: var(--radius); display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 36px 44px; text-align: center; min-height: 220px;
+  }
+  .card-front {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    box-shadow: var(--shadow-lg);
+  }
+  .card-front .clabel {
+    font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 14px;
+    background: var(--wireless-light); padding: 4px 12px; border-radius: 100px;
+  }
+  .card-front .cq {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.45rem); font-weight: 700; line-height: 1.35; color: var(--text);
+  }
+  .card-back {
+    background: var(--text);
+    border: 2px solid var(--text);
+    box-shadow: var(--shadow-lg);
+    transform: rotateY(180deg);
+  }
+  .card-back .clabel {
+    font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    color: #fb923c; margin-bottom: 14px;
+    background: rgba(255,255,255,.1); padding: 4px 12px; border-radius: 100px;
+  }
+  .card-back .ca { font-size: 15px; line-height: 1.7; color: #e2e8f0; white-space: pre-line; }
+  .card-hint { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+  .fc-nav { display: flex; gap: 10px; justify-content: center; }
+
+  /* ── Buttons ── */
+  .btn {
+    background: var(--surface); border: 2px solid var(--border);
+    color: var(--text); padding: 10px 22px; border-radius: 10px;
+    font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; gap: 6px;
+    box-shadow: var(--shadow);
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); background: var(--wireless-light); }
+  .btn.primary {
+    background: var(--accent); border-color: var(--accent); color: #fff;
+    box-shadow: 0 2px 8px rgba(37,99,235,.35);
+  }
+  .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+  /* ── Sort Game ── */
+  .sort-intro {
+    background: var(--surface); border: 2px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px; margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .sort-intro h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 800; margin-bottom: 6px; color: var(--text); }
+  .sort-intro p { color: var(--text-secondary); font-size: 14px; line-height: 1.6; }
+
+  .pool-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--text-secondary); margin-bottom: 10px;
+  }
+  .stmt-chip {
+    display: inline-block;
+    background: #fef3c7; border: 2px solid #fcd34d;
+    color: #92400e; border-radius: 8px; padding: 9px 14px; margin: 4px;
+    font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; line-height: 1.4;
+    user-select: none; box-shadow: var(--shadow);
+  }
+  .stmt-chip:hover { background: #fde68a; border-color: #f59e0b; transform: translateY(-1px); }
+  .stmt-chip.placed { opacity: .3; pointer-events: none; }
+
+  .sort-tables { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media(max-width:580px) { .sort-tables { grid-template-columns: 1fr; } }
+
+  .sort-table { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .sort-table-header {
+    padding: 14px 18px; font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  }
+  .sort-table-header.wired {
+    background: var(--wired-light); color: var(--wired);
+    border-bottom: 2px solid var(--wired-border);
+  }
+  .sort-table-header.wireless {
+    background: var(--wireless-light); color: var(--wireless);
+    border-bottom: 2px solid var(--wireless-border);
+  }
+  .sort-cols { display: grid; grid-template-columns: 1fr 1fr; }
+  .sort-col { padding: 12px 14px; }
+  .sort-col:first-child { border-right: 2px solid var(--border-light); }
+  .sort-col-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--text-secondary); margin-bottom: 8px;
+  }
+  .drop-zone {
+    min-height: 70px; border: 2px dashed var(--border); border-radius: 10px;
+    padding: 6px; display: flex; flex-direction: column; gap: 5px; align-content: flex-start;
+    transition: all .15s; background: var(--bg);
+  }
+
+  .placed-chip {
+    background: var(--surface); border: 2px solid var(--border); border-radius: 8px;
+    padding: 7px 11px; font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer;
+    transition: all .2s; line-height: 1.4; display: flex; align-items: flex-start; gap: 7px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .placed-chip:hover:not(.chip-correct):not(.chip-wrong) {
+    border-color: var(--wrong); background: var(--wrong-bg); color: var(--wrong);
+  }
+  .placed-chip.chip-correct {
+    background: var(--correct-bg); border-color: var(--correct-border);
+    color: var(--correct); cursor: default; font-weight: 600;
+  }
+  .placed-chip.chip-wrong {
+    background: var(--wrong-bg); border-color: var(--wrong-border);
+    color: var(--wrong); cursor: default; font-weight: 600;
+  }
+  .chip-icon { flex-shrink: 0; margin-top: 1px; }
+
+  .sort-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+  .sort-result {
+    margin-top: 14px; padding: 16px 20px; border-radius: 12px;
+    font-size: 15px; font-weight: 600; display: none; border: 2px solid;
+  }
+  .sort-result.correct { background: var(--correct-bg); border-color: var(--correct-border); color: var(--correct); }
+  .sort-result.partial { background: #fffbeb; border-color: #fcd34d; color: #92400e; }
+
+  /* ── Scenario Game ── */
+  .scenario-card {
+    background: var(--surface); border: 2px solid var(--border);
+    border-radius: var(--radius); padding: 22px 24px; margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .scenario-card h4 {
+    font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 800;
+    margin-bottom: 8px; color: var(--text);
+  }
+  .scenario-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 16px; }
+  .scenario-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .sc-btn {
+    padding: 10px 22px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer;
+    border: 2px solid; transition: all .15s; font-family: 'Outfit', sans-serif;
+  }
+  .sc-btn.wired-btn {
+    border-color: var(--wired-border); color: var(--wired); background: var(--wired-light);
+  }
+  .sc-btn.wired-btn:hover, .sc-btn.wired-btn.selected {
+    background: #fed7aa; border-color: var(--wired); box-shadow: 0 2px 8px rgba(234,88,12,.2);
+  }
+  .sc-btn.wireless-btn {
+    border-color: var(--wireless-border); color: var(--wireless); background: var(--wireless-light);
+  }
+  .sc-btn.wireless-btn:hover, .sc-btn.wireless-btn.selected {
+    background: #bfdbfe; border-color: var(--wireless); box-shadow: 0 2px 8px rgba(37,99,235,.2);
+  }
+  .sc-btn:disabled { opacity: .45; cursor: default; box-shadow: none; }
+  .sc-feedback {
+    font-size: 14px; margin-top: 12px; padding: 12px 16px; border-radius: 10px;
+    display: none; line-height: 1.55; border: 2px solid; font-weight: 500;
+  }
+  .sc-feedback.correct { background: var(--correct-bg); border-color: var(--correct-border); color: var(--correct); }
+  .sc-feedback.wrong { background: var(--wrong-bg); border-color: var(--wrong-border); color: var(--wrong); }
+  #scenario-score { margin-top: 16px; text-align: center; color: var(--text-secondary); font-size: 14px; font-weight: 600; }
+
+  /* ── Quiz ── */
+  .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+  .quiz-header .q-count { color: var(--text-secondary); font-size: 14px; font-weight: 600; }
+  .score-badge {
+    background: var(--wireless-light); border: 2px solid var(--wireless-border);
+    color: var(--wireless); font-size: 14px; font-weight: 700; padding: 5px 16px; border-radius: 100px;
+  }
+  .question-card {
+    background: var(--surface); border: 2px solid var(--border);
+    border-radius: var(--radius); padding: 28px; margin-bottom: 12px; box-shadow: var(--shadow-lg);
+  }
+  .q-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1rem, 2.5vw, 1.15rem); font-weight: 800; line-height: 1.4;
+    margin-bottom: 20px; color: var(--text);
+  }
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media(max-width:520px) { .options { grid-template-columns: 1fr; } }
+  .option {
+    background: var(--bg); border: 2px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; cursor: pointer; text-align: left;
+    font-family: 'Outfit', sans-serif; font-size: 14px; color: var(--text); font-weight: 500;
+    transition: all .15s; line-height: 1.4;
+  }
+  .option:hover:not(:disabled) { border-color: var(--accent); background: var(--wireless-light); color: var(--accent); }
+  .option.correct { border-color: var(--correct); background: var(--correct-bg); color: var(--correct); font-weight: 700; }
+  .option.wrong { border-color: var(--wrong); background: var(--wrong-bg); color: var(--wrong); font-weight: 700; }
+  .option:disabled { cursor: default; }
+  .feedback {
+    border-radius: 10px; padding: 14px 18px; font-size: 14px; line-height: 1.6;
+    margin-top: 12px; display: none; border: 2px solid; font-weight: 500;
+  }
+  .feedback.correct { background: var(--correct-bg); border-color: var(--correct-border); color: var(--correct); }
+  .feedback.wrong { background: var(--wrong-bg); border-color: var(--wrong-border); color: var(--wrong); }
+  .quiz-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 12px; }
+  .results {
+    text-align: center; padding: 52px 24px;
+    background: var(--surface); border: 2px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow-lg);
+  }
+  .big-score {
+    font-family: 'Space Grotesk', sans-serif; font-size: 5rem; font-weight: 800;
+    color: var(--accent); line-height: 1; margin-bottom: 8px;
+  }
+  .result-msg { font-size: 20px; font-weight: 800; margin-bottom: 6px; color: var(--text); }
+  .result-sub { color: var(--text-secondary); font-size: 15px; margin-bottom: 28px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">📡 Year 8 · Unit 4 · Lesson 3</div>
+  <h1><span class="w">Wired</span> or <span class="wi">Wireless</span>?</h1>
+  <p>Revise networks, bandwidth, and connectivity for your assessment</p>
+</header>
+
+<nav>
+  <button class="tab-btn active" onclick="showSection('flashcards')">🃏 Flashcards</button>
+  <button class="tab-btn" onclick="showSection('sort')">🔀 Sort Activity</button>
+  <button class="tab-btn" onclick="showSection('scenarios')">🏪 Scenarios</button>
+  <button class="tab-btn" onclick="showSection('quiz')">🧠 Quiz</button>
+</nav>
+
+<!-- ══════════ FLASHCARDS ══════════ -->
+<section id="flashcards-section" class="section active">
+  <div class="pills">
+    <button class="pill active" onclick="filterCards('all',this)">All</button>
+    <button class="pill" onclick="filterCards('basics',this)">📡 Basics</button>
+    <button class="pill" onclick="filterCards('bandwidth',this)">📶 Bandwidth</button>
+    <button class="pill" onclick="filterCards('compare',this)">⚖️ Wired vs Wireless</button>
+    <button class="pill" onclick="filterCards('misconception',this)">⚠️ Misconceptions</button>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="fc-progress"></div></div>
+  <div class="fc-controls">
+    <span id="fc-counter">Card 1 of 1</span>
+    <button class="btn primary" onclick="shuffleCards()">🔀 Shuffle</button>
+  </div>
+  <div class="card-scene">
+    <div class="card-inner" id="flashcard" onclick="flipCard()">
+      <div class="card-face card-front">
+        <div class="clabel">Question</div>
+        <div class="cq" id="fc-q"></div>
+      </div>
+      <div class="card-face card-back">
+        <div class="clabel">Answer</div>
+        <div class="ca" id="fc-a"></div>
+      </div>
+    </div>
+  </div>
+  <p class="card-hint">👆 Tap the card to flip</p>
+  <div class="fc-nav">
+    <button class="btn" onclick="prevCard()">← Prev</button>
+    <button class="btn" onclick="nextCard()">Next →</button>
+  </div>
+</section>
+
+<!-- ══════════ SORT ACTIVITY ══════════ -->
+<section id="sort-section" class="section">
+  <div class="sort-intro">
+    <h3>🔀 Wired vs Wireless — Sort the Statements</h3>
+    <p>Click a statement below to place it in the correct table. Click a placed statement to remove it back to the pool. Then check your answers!</p>
+  </div>
+
+  <div class="statements-pool">
+    <div class="pool-label">📋 Statements to sort — click one to place it</div>
+    <div id="stmt-pool"></div>
+  </div>
+
+  <div class="sort-tables">
+    <!-- Wired -->
+    <div class="sort-table">
+      <div class="sort-table-header wired">🔌 Wired Networks</div>
+      <div class="sort-cols">
+        <div class="sort-col">
+          <div class="sort-col-label">Advantage</div>
+          <div class="drop-zone" id="wired-adv"></div>
+        </div>
+        <div class="sort-col">
+          <div class="sort-col-label">Disadvantage</div>
+          <div class="drop-zone" id="wired-dis"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Wireless -->
+    <div class="sort-table">
+      <div class="sort-table-header wireless">📶 Wireless Networks</div>
+      <div class="sort-cols">
+        <div class="sort-col">
+          <div class="sort-col-label">Advantage</div>
+          <div class="drop-zone" id="wireless-adv"></div>
+        </div>
+        <div class="sort-col">
+          <div class="sort-col-label">Disadvantage</div>
+          <div class="drop-zone" id="wireless-dis"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sort-actions">
+    <button class="btn primary" onclick="checkSort()">✅ Check Answers</button>
+    <button class="btn" onclick="resetSort()">🔄 Reset</button>
+  </div>
+  <div class="sort-result" id="sort-result"></div>
+</section>
+
+<!-- ══════════ SCENARIOS ══════════ -->
+<section id="scenarios-section" class="section">
+  <div class="sort-intro" style="margin-bottom:20px">
+    <h3>🏪 Wired or Wireless? — Scenarios</h3>
+    <p>Read each scenario carefully. Decide whether a wired or wireless network would be most suitable and why.</p>
+  </div>
+  <div id="scenario-cards"></div>
+  <div id="scenario-score"></div>
+  <div style="margin-top:16px;display:flex;gap:10px;justify-content:center">
+    <button class="btn primary" onclick="resetScenarios()">🔄 Try Again</button>
+  </div>
+</section>
+
+<!-- ══════════ QUIZ ══════════ -->
+<section id="quiz-section" class="section">
+  <div id="quiz-container"></div>
+</section>
+
+<script>
+// ── FLASHCARDS ─────────────────────────────────────────────────
+const allCards = [
+  { q:"How does a wired network send data?", a:"Along physical cables (e.g. ethernet cables).", cat:"basics" },
+  { q:"How does a wireless network send data?", a:"Through the air using radio waves — no physical cables needed.", cat:"basics" },
+  { q:"Name four examples of wireless technologies.", a:"WiFi, Bluetooth, 4G (mobile), 5G (mobile).\nOthers include: 3G, infrared, satellite, microwave.", cat:"basics" },
+  { q:"What is Bluetooth used for?", a:"Short-range wireless data transfer — e.g. connecting headphones to a phone, or a keyboard to a computer.", cat:"basics" },
+  { q:"What is WiFi?", a:"A wireless technology that allows devices to connect to the internet or to each other without physical cables.", cat:"basics" },
+  { q:"What is the difference between 3G, 4G and 5G?", a:"They are all mobile wireless technologies with increasing bandwidth:\n• 3G: ~3 Mbps\n• 4G: ~20 Mbps\n• 5G: much faster still.\nHigher generation = more data can be transferred.", cat:"basics" },
+  { q:"What does 'download' mean?", a:"Your device is receiving data from the internet — e.g. loading a webpage, streaming a video, downloading a file.", cat:"basics" },
+  { q:"What does 'upload' mean?", a:"Your device is sending data to the internet — e.g. posting a photo, uploading a video to YouTube.", cat:"basics" },
+  { q:"What is bandwidth?", a:"The amount of data that can be moved from one point to another in a given time. Measured in bits per second (Mbps).", cat:"bandwidth" },
+  { q:"Does more bandwidth mean data travels faster?", a:"NO — this is a common misconception.\nMore bandwidth means more data can travel at once, not faster. Like a wider pipe — more water flows, but not faster.", cat:"bandwidth" },
+  { q:"What is the pipe analogy for bandwidth?", a:"A wider pipe allows more water to flow through at once — but the water doesn't move faster. Similarly, more bandwidth = more data at once, not faster speed.", cat:"bandwidth" },
+  { q:"What are typical download speeds for 3G, 4G and broadband?", a:"• 3G: ~3 Mbps\n• 4G: ~20 Mbps\n• Broadband: ~46 Mbps\nBroadband has the highest bandwidth.", cat:"bandwidth" },
+  { q:"Why are upload speeds usually slower than download speeds?", a:"Most users download far more than they upload, so internet providers (ISPs) prioritise download bandwidth. Upload capacity is lower.", cat:"bandwidth" },
+  { q:"Give three advantages of a wired network.", a:"1. Faster connection — little or no interference\n2. Higher bandwidth\n3. Better security — harder to intercept", cat:"compare" },
+  { q:"Give three disadvantages of a wired network.", a:"1. Cables can be trip hazards and look unpleasant\n2. More expensive and time-consuming to add devices\n3. No portability — devices stay in fixed positions", cat:"compare" },
+  { q:"Give three advantages of a wireless network.", a:"1. No trailing wires — no trip hazard\n2. Quick and cheap to connect new devices\n3. Portability — move freely with your device", cat:"compare" },
+  { q:"Give three disadvantages of a wireless network.", a:"1. Lower bandwidth (interference reduces speed)\n2. Signals weakened by walls and ceilings\n3. Less secure — data can be intercepted more easily", cat:"compare" },
+  { q:"Why is wired better for a games console?", a:"Online gaming needs consistent, high bandwidth with minimal interference. Wired provides a more stable, faster, and secure connection than wireless.", cat:"compare" },
+  { q:"Why is wireless more suitable for a café offering free internet?", a:"Customers bring their own devices (phones, laptops) that are portable. Connecting each customer's device via a cable is impractical.", cat:"compare" },
+  { q:"Why is a wired network better for a vlogger uploading videos?", a:"Uploading large video files requires high bandwidth. Wired networks provide higher, more consistent bandwidth than wireless.", cat:"compare" },
+  { q:"MISCONCEPTION: 'More bandwidth means data travels faster.' True or False?", a:"FALSE ⚠️\nBandwidth is the amount of data that can travel at once — not the speed it travels. Like a wider pipe: more flow, same speed.", cat:"misconception" },
+  { q:"MISCONCEPTION: 'Wireless is just as good as wired for everything.' True or False?", a:"FALSE ⚠️\nWireless suffers from lower bandwidth, interference from walls, and is less secure. Wired is better for high-bandwidth tasks.", cat:"misconception" },
+  { q:"MISCONCEPTION: 'WiFi, Bluetooth and 4G are all the same type of wireless.' True or False?", a:"FALSE ⚠️\nThey're all wireless but work differently:\n• Bluetooth = short range\n• WiFi = local network\n• 4G/5G = wide-area mobile network", cat:"misconception" },
+  { q:"MISCONCEPTION: 'Wired networks are more secure just because they use cables.' True or False?", a:"PARTIALLY TRUE — but understand WHY: data on a wired network can only be accessed by devices physically connected to it. Wireless signals can be intercepted by anyone in range.", cat:"misconception" },
+];
+
+let filtered = [...allCards], current = 0;
+function filterCards(cat, el) {
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  filtered = cat === 'all' ? [...allCards] : allCards.filter(c => c.cat === cat);
+  current = 0; renderCard();
+}
+function shuffleCards() {
+  for (let i = filtered.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
+  }
+  current = 0; renderCard();
+}
+function renderCard() {
+  document.getElementById('fc-q').textContent = filtered[current].q;
+  document.getElementById('fc-a').textContent = filtered[current].a;
+  document.getElementById('fc-counter').textContent = `Card ${current + 1} of ${filtered.length}`;
+  document.getElementById('fc-progress').style.width = ((current + 1) / filtered.length * 100) + '%';
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
+function nextCard() { current = (current + 1) % filtered.length; renderCard(); }
+function prevCard() { current = (current - 1 + filtered.length) % filtered.length; renderCard(); }
+renderCard();
+
+// ── SORT ACTIVITY ───────────────────────────────────────────────
+const sortableStmts = [
+  { text: "Connections can be weakened by walls and ceilings", zone: "wireless-dis" },
+  { text: "Better security", zone: "wired-adv" },
+  { text: "More expensive and time-consuming to add devices, as each device needs cables", zone: "wired-dis" },
+  { text: "Devices are in fixed positions (no portability)", zone: "wired-dis" },
+  { text: "It is quick and cheap to connect new devices", zone: "wireless-adv" },
+  { text: "Allows portability", zone: "wireless-adv" },
+];
+
+function buildSort() {
+  const pool = document.getElementById('stmt-pool');
+  pool.innerHTML = sortableStmts.map((s, i) =>
+    `<div class="stmt-chip" id="chip-${i}" onclick="placeChip(${i})">${s.text}</div>`
+  ).join('');
+  ['wired-adv','wired-dis','wireless-adv','wireless-dis'].forEach(z => {
+    document.getElementById(z).innerHTML = '';
+  });
+  document.getElementById('sort-result').style.display = 'none';
+}
+
+let chipZones = {};
+function placeChip(i) {
+  const chip = document.getElementById('chip-' + i);
+  if (chip.classList.contains('placed')) return;
+  // cycle through zones with a picker
+  const zonePicker = document.createElement('div');
+  zonePicker.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:999;padding:24px';
+  zonePicker.innerHTML = `
+    <div style="background:#141d2e;border:1px solid #1e2d45;border-radius:16px;padding:24px;max-width:380px;width:100%">
+      <p style="font-weight:700;margin-bottom:6px;font-size:14px">Place: "${sortableStmts[i].text}"</p>
+      <p style="color:#64748b;font-size:12px;margin-bottom:16px">Select where this statement belongs:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <button onclick="confirmPlace(${i},'wired-adv')" style="background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.3);color:#fb923c;padding:12px;border-radius:10px;cursor:pointer;font-family:Outfit,sans-serif;font-size:13px;font-weight:600">🔌 Wired<br>Advantage</button>
+        <button onclick="confirmPlace(${i},'wired-dis')" style="background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.3);color:#fb923c;padding:12px;border-radius:10px;cursor:pointer;font-family:Outfit,sans-serif;font-size:13px;font-weight:600">🔌 Wired<br>Disadvantage</button>
+        <button onclick="confirmPlace(${i},'wireless-adv')" style="background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:#60a5fa;padding:12px;border-radius:10px;cursor:pointer;font-family:Outfit,sans-serif;font-size:13px;font-weight:600">📶 Wireless<br>Advantage</button>
+        <button onclick="confirmPlace(${i},'wireless-dis')" style="background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:#60a5fa;padding:12px;border-radius:10px;cursor:pointer;font-family:Outfit,sans-serif;font-size:13px;font-weight:600">📶 Wireless<br>Disadvantage</button>
+      </div>
+      <button onclick="this.closest('div[style]').remove()" style="margin-top:12px;width:100%;background:transparent;border:1px solid #1e2d45;color:#64748b;padding:10px;border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif;font-size:13px">Cancel</button>
+    </div>`;
+  document.body.appendChild(zonePicker);
+  window._picker = zonePicker;
+}
+
+function confirmPlace(i, zoneId) {
+  if (window._picker) window._picker.remove();
+  chipZones[i] = zoneId;
+  document.getElementById('chip-' + i).classList.add('placed');
+  const zone = document.getElementById(zoneId);
+  const placed = document.createElement('div');
+  placed.className = 'placed-chip';
+  placed.dataset.idx = i;
+  placed.textContent = sortableStmts[i].text;
+  placed.title = 'Click to remove';
+  placed.onclick = () => removeChip(i, placed);
+  zone.appendChild(placed);
+}
+
+function removeChip(i, el) {
+  el.remove();
+  delete chipZones[i];
+  document.getElementById('chip-' + i).classList.remove('placed');
+}
+
+const zoneLabels = {
+  'wired-adv':    '🔌 Wired → Advantage',
+  'wired-dis':    '🔌 Wired → Disadvantage',
+  'wireless-adv': '📶 Wireless → Advantage',
+  'wireless-dis': '📶 Wireless → Disadvantage',
+};
+
+function checkSort() {
+  const placed = Object.keys(chipZones).length;
+  const res = document.getElementById('sort-result');
+
+  let correct = 0;
+  sortableStmts.forEach((s, i) => {
+    const chip = document.querySelector(`.placed-chip[data-idx="${i}"]`);
+    if (!chip) return;
+    chip.onclick = null;
+    if (chipZones[i] === s.zone) {
+      correct++;
+      chip.classList.add('chip-correct');
+      chip.innerHTML = `<span class="chip-icon">✅</span>${s.text}`;
+    } else {
+      chip.classList.add('chip-wrong');
+      chip.innerHTML = `<span class="chip-icon">❌</span><span>${s.text}<br><small style="font-size:10px;opacity:.8">Should be: ${zoneLabels[s.zone]}</small></span>`;
+    }
+  });
+
+  const unplaced = sortableStmts.length - placed;
+  res.style.display = 'block';
+  if (correct === sortableStmts.length) {
+    res.className = 'sort-result correct';
+    res.textContent = `🎉 Perfect! All ${correct}/${sortableStmts.length} statements correctly sorted!`;
+  } else if (unplaced > 0) {
+    res.className = 'sort-result partial';
+    res.textContent = `${correct}/${placed} placed correctly — but you still have ${unplaced} statement${unplaced > 1 ? 's' : ''} left to sort!`;
+  } else {
+    res.className = 'sort-result partial';
+    res.textContent = `${correct}/${sortableStmts.length} correct — red ones show where they should go. Reset and try again!`;
+  }
+}
+
+function resetSort() { chipZones = {}; buildSort(); }
+buildSort();
+
+// ── SCENARIOS ───────────────────────────────────────────────────
+const scenarios = [
+  {
+    name: "🍽️ The Restaurant",
+    desc: "A restaurant uses portable tablets to take orders from guests. When orders are placed, they appear on a screen in the kitchen.",
+    answer: "wireless",
+    explain: "The tablets are portable — it would be completely impractical to have cables trailing from each tablet to the kitchen screen."
+  },
+  {
+    name: "🎮 The Vlogger",
+    desc: "A gaming vlogger with 1 million subscribers records and uploads high-definition video footage of popular online multiplayer games to YouTube daily.",
+    answer: "wired",
+    explain: "Uploading large HD video files and online gaming both require consistently high bandwidth. Wired provides higher, more stable bandwidth than wireless."
+  },
+  {
+    name: "🏫 The Primary School",
+    desc: "A local primary school has two rooms used for computing lessons, each with 30 personal computers fixed to desks. No portable devices are used.",
+    answer: "wired",
+    explain: "The computers are fixed and never move, so portability isn't needed. Wired gives better security and more consistent speeds."
+  },
+  {
+    name: "☕ The Café",
+    desc: "A café gives paying customers free internet access. Customers use their own devices: phones, tablets and laptops.",
+    answer: "wireless",
+    explain: "Customers bring portable devices that vary. It's simpler and cheaper for customers to connect wirelessly rather than using physical cables."
+  },
+  {
+    name: "🏢 The Office",
+    desc: "A large office has over 200 workers who each need a computer to work. Every employee has their own fixed desk area.",
+    answer: "wired",
+    explain: "All workers are at fixed desks and don't need to move around. Wired offers better security for business data and more consistent speeds."
+  },
+  {
+    name: "👨‍👩‍👧‍👦 The Family",
+    desc: "A family of 4 uses computers, laptops, phones, tablets and smart TVs throughout their home for shopping, gaming, and streaming.",
+    answer: "wireless",
+    explain: "Family members move around the house with portable devices. Wireless allows freedom of movement without cables trailing through every room."
+  },
+];
+
+let scenarioAnswered = {};
+function buildScenarios() {
+  scenarioAnswered = {};
+  const container = document.getElementById('scenario-cards');
+  container.innerHTML = scenarios.map((s, i) => `
+    <div class="scenario-card" id="sc-${i}">
+      <h4>${s.name}</h4>
+      <p>${s.desc}</p>
+      <div class="scenario-btns">
+        <button class="sc-btn wired-btn" onclick="answerScenario(${i},'wired')">🔌 Wired</button>
+        <button class="sc-btn wireless-btn" onclick="answerScenario(${i},'wireless')">📶 Wireless</button>
+      </div>
+      <div class="sc-feedback" id="sc-fb-${i}"></div>
+    </div>
+  `).join('');
+  updateScenarioScore();
+}
+
+function answerScenario(i, choice) {
+  if (scenarioAnswered[i]) return;
+  scenarioAnswered[i] = true;
+  const s = scenarios[i];
+  const card = document.getElementById('sc-' + i);
+  const fb = document.getElementById('sc-fb-' + i);
+  card.querySelectorAll('.sc-btn').forEach(b => b.disabled = true);
+  card.querySelector('.' + choice + '-btn').classList.add('selected');
+  if (choice === s.answer) {
+    fb.className = 'sc-feedback correct';
+    fb.innerHTML = `✅ Correct! ${s.explain}`;
+  } else {
+    fb.className = 'sc-feedback wrong';
+    fb.innerHTML = `❌ Not quite — <strong>${s.answer === 'wired' ? '🔌 Wired' : '📶 Wireless'}</strong> is better here. ${s.explain}`;
+  }
+  fb.style.display = 'block';
+  updateScenarioScore();
+}
+
+function updateScenarioScore() {
+  const done = Object.keys(scenarioAnswered).length;
+  const correct = scenarios.filter((s, i) => scenarioAnswered[i] && s.answer === (document.querySelector(`#sc-${i} .sc-btn.selected`)?.classList.contains('wired-btn') ? 'wired' : 'wireless')).length;
+  document.getElementById('scenario-score').textContent = done > 0 ? `${done} of ${scenarios.length} answered` : '';
+}
+
+function resetScenarios() { buildScenarios(); }
+buildScenarios();
+
+// ── QUIZ ────────────────────────────────────────────────────────
+const quizQs = [
+  {
+    q: "How does a wireless network transmit data?",
+    options: ["Through fibre optic cables","Through copper wires","Through the air using radio waves","Through satellite only"],
+    answer: 2,
+    explain: "Wireless networks send data as radio waves through the air — no physical connection needed."
+  },
+  {
+    q: "What does bandwidth measure?",
+    options: [
+      "How fast data travels through a cable",
+      "The amount of data that can be moved from one point to another in a given time",
+      "The distance a wireless signal can travel",
+      "The number of devices on a network"
+    ],
+    answer: 1,
+    explain: "Bandwidth is the amount of data that can be transferred at once, measured in bits per second (Mbps)."
+  },
+  {
+    q: "A common misconception is that higher bandwidth means data travels faster. What does it actually mean?",
+    options: [
+      "Data travels faster",
+      "The network uses less electricity",
+      "More data can travel at the same time — not faster",
+      "The connection is more secure"
+    ],
+    answer: 2,
+    explain: "Think of the pipe analogy — a wider pipe lets more water flow at once, but the water doesn't move faster."
+  },
+  {
+    q: "Which has the highest typical download bandwidth?",
+    options: ["3G (3 Mbps)","4G (20 Mbps)","Broadband (46 Mbps)","Bluetooth"],
+    answer: 2,
+    explain: "Broadband has the highest bandwidth at ~46 Mbps, compared to 4G (~20 Mbps) and 3G (~3 Mbps)."
+  },
+  {
+    q: "Which is an advantage of a WIRED network?",
+    options: [
+      "Allows portability",
+      "Quick and cheap to add new devices",
+      "No trip hazard from cables",
+      "Faster connection with higher bandwidth"
+    ],
+    answer: 3,
+    explain: "Wired networks provide faster, more consistent connections with higher bandwidth due to less interference."
+  },
+  {
+    q: "Which is a disadvantage of a WIRELESS network?",
+    options: [
+      "Devices are in fixed positions",
+      "Expensive to add new devices",
+      "Connections can be weakened by walls and ceilings",
+      "Cables can be a trip hazard"
+    ],
+    answer: 2,
+    explain: "Wireless signals can be blocked or weakened by physical barriers like walls and ceilings, causing dropped connections or slower speeds."
+  },
+  {
+    q: "Why is a wired network considered more secure than wireless?",
+    options: [
+      "It uses stronger passwords",
+      "Data can only be accessed by devices physically connected to the network",
+      "It automatically encrypts all data",
+      "It has a built-in firewall"
+    ],
+    answer: 1,
+    explain: "With wired, you need a physical cable connection to access the network. Wireless signals travel through the air and can be intercepted by anyone in range."
+  },
+  {
+    q: "A gaming vlogger needs to upload large HD videos daily. Should they use wired or wireless — and why?",
+    options: [
+      "Wireless — because it's more convenient",
+      "Wireless — because it's cheaper",
+      "Wired — because it provides higher, more consistent bandwidth",
+      "Either — it makes no difference"
+    ],
+    answer: 2,
+    explain: "Large uploads require consistently high bandwidth. Wired is better here because wireless can suffer interference, dropping speeds at the worst moment."
+  },
+  {
+    q: "Why is Bluetooth different from WiFi?",
+    options: [
+      "Bluetooth uses cables",
+      "Bluetooth is designed for short-range transfer; WiFi connects to networks",
+      "WiFi only works outdoors",
+      "They are the same technology"
+    ],
+    answer: 1,
+    explain: "Bluetooth is designed for short-range device-to-device data transfer (e.g. headphones). WiFi connects devices to a network or the internet at greater range."
+  },
+  {
+    q: "A café wants to offer free internet to customers using their own phones and laptops. Which is best?",
+    options: [
+      "Wired — more secure",
+      "Wired — higher bandwidth",
+      "Wireless — customers use portable devices",
+      "Wireless — always faster"
+    ],
+    answer: 2,
+    explain: "Customers bring their own portable devices. Connecting them all with physical cables would be completely impractical."
+  },
+  {
+    q: "Why are upload speeds usually slower than download speeds?",
+    options: [
+      "Uploading uses more electricity",
+      "Upload data is larger than download data",
+      "Most users download far more than they upload, so ISPs prioritise download bandwidth",
+      "Upload requires a wired connection"
+    ],
+    answer: 2,
+    explain: "Internet providers know most users stream, browse, and download far more than they upload — so download bandwidth is prioritised."
+  },
+  {
+    q: "Which scenario is BEST suited to a wired network?",
+    options: [
+      "A café with customers using portable devices",
+      "A family using phones and tablets around the home",
+      "An office with 200 workers at fixed desks",
+      "A restaurant using portable order tablets"
+    ],
+    answer: 2,
+    explain: "Fixed-desk workers don't need portability. Wired provides better security and bandwidth for 200 users all working simultaneously."
+  },
+];
+
+let qState = { current: 0, score: 0, answered: false };
+function buildQuiz() { qState = { current:0, score:0, answered:false }; renderQ(); }
+function renderQ() {
+  const c = document.getElementById('quiz-container');
+  if (qState.current >= quizQs.length) { showResults(c); return; }
+  const q = quizQs[qState.current];
+  const pct = (qState.current / quizQs.length) * 100;
+  c.innerHTML = `
+    <div class="quiz-header">
+      <span class="q-count">Question ${qState.current + 1} of ${quizQs.length}</span>
+      <span class="score-badge">Score: ${qState.score}</span>
+    </div>
+    <div class="progress-bar" style="margin-bottom:16px"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="question-card">
+      <div class="q-text">${q.q}</div>
+      <div class="options">
+        ${q.options.map((o,i) => `<button class="option" id="opt-${i}" onclick="selectAns(${i})">${o}</button>`).join('')}
+      </div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+    <div class="quiz-actions">
+      <button class="btn primary" id="next-btn" style="display:none" onclick="nextQ()">Next →</button>
+    </div>`;
+}
+function selectAns(idx) {
+  if (qState.answered) return;
+  qState.answered = true;
+  const q = quizQs[qState.current];
+  document.querySelectorAll('.option').forEach(o => o.disabled = true);
+  const fb = document.getElementById('feedback');
+  if (idx === q.answer) {
+    qState.score++;
+    document.getElementById('opt-' + idx).classList.add('correct');
+    fb.className = 'feedback correct';
+    fb.innerHTML = `✅ Correct! ${q.explain}`;
+  } else {
+    document.getElementById('opt-' + idx).classList.add('wrong');
+    document.getElementById('opt-' + q.answer).classList.add('correct');
+    fb.className = 'feedback wrong';
+    fb.innerHTML = `❌ Not quite. ${q.explain}`;
+  }
+  fb.style.display = 'block';
+  document.getElementById('next-btn').style.display = 'inline-flex';
+}
+function nextQ() { qState.current++; qState.answered = false; renderQ(); }
+function showResults(c) {
+  const pct = Math.round(qState.score / quizQs.length * 100);
+  const stars = pct >= 90 ? "⭐⭐⭐" : pct >= 70 ? "⭐⭐" : pct >= 50 ? "⭐" : "";
+  const msg = pct >= 90 ? "Outstanding! 🎉" : pct >= 70 ? "Great work!" : pct >= 50 ? "Good effort — review and try again!" : "Keep revising — you'll get there! 💪";
+  c.innerHTML = `<div class="results">
+    <div style="font-size:2.5rem;margin-bottom:8px">${stars}</div>
+    <div class="big-score">${qState.score}/${quizQs.length}</div>
+    <div class="result-msg">${msg}</div>
+    <div class="result-sub">${pct}% — ${qState.score} correct out of ${quizQs.length}</div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn primary" onclick="buildQuiz()">🔄 Try Again</button>
+      <button class="btn" onclick="showSection('flashcards')">🃏 Flashcards</button>
+      <button class="btn" onclick="showSection('sort')">🔀 Sort Activity</button>
+    </div>
+  </div>`;
+}
+
+// ── TAB SWITCHING ────────────────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id + '-section').classList.add('active');
+  const map = { flashcards:'flash', sort:'sort', scenarios:'scenario', quiz:'quiz' };
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    if (b.textContent.toLowerCase().includes(map[id])) b.classList.add('active');
+  });
+  if (id === 'quiz') buildQuiz();
+}
+</script>
+</body>
+</html>
